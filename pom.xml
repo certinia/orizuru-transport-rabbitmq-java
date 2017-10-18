@@ -20,13 +20,20 @@
 		<rules.version>1.16.1</rules.version>
 	</properties>
 
+	<repositories>
+		<repository>
+			<id>jitpack.io</id>
+			<url>https://jitpack.io</url>
+		</repository>
+	</repositories>
+
 	<dependencies>
 
 		<!-- Orizuru -->
 		<dependency>
-			<groupId>com.financialforce.orizuru</groupId>
-			<artifactId>core</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<groupId>com.github.financialforcedev</groupId>
+			<artifactId>orizuru-java</artifactId>
+			<version>master</version>
 		</dependency>
 
 		<!-- JUnit -->
