@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.financialforce.orizuru</groupId>
-	<artifactId>transport.rabbitmq</artifactId>
+	<artifactId>rabbitmq</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
@@ -25,8 +25,8 @@
 
 		<!-- Orizuru -->
 		<dependency>
-			<groupId>com.financialforce</groupId>
-			<artifactId>orizuru</artifactId>
+			<groupId>com.financialforce.orizuru</groupId>
+			<artifactId>core</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 
