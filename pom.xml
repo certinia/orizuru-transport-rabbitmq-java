@@ -6,6 +6,8 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
+	<name>Orizuru Transport RabbitMQ Java</name>
+
 	<properties>
 		<java.version>1.8</java.version>
 		<jdkVersion>1.8</jdkVersion>
@@ -15,8 +17,9 @@
 		<maven.checkstyle.version>2.17</maven.checkstyle.version>
 		<maven.compiler.version>3.7.0</maven.compiler.version>
 		<maven.jacoco.version>0.7.9</maven.jacoco.version>
+		<maven.javadoc.version>3.0.0-M1</maven.javadoc.version>
 		<mockito.version>2.8.47</mockito.version>
-		<orizuru.version>5c6778c5834921c84b4e467db4e489308a3b1923</orizuru.version>
+		<orizuru.version>c6a138d21658d6f3d5e501e37ff27d8c6bcc9cc6</orizuru.version>
 		<rabbitmq.version>5.0.0</rabbitmq.version>
 		<rules.version>1.16.1</rules.version>
 	</properties>
@@ -164,6 +167,25 @@
 						</configuration>
 					</execution>
 				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>${maven.javadoc.version}</version>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<reportOutputDirectory>doc</reportOutputDirectory>
+					<destDir>doc</destDir>
+					<notimestamp>true</notimestamp>
+				</configuration>
 			</plugin>
 
 		</plugins>

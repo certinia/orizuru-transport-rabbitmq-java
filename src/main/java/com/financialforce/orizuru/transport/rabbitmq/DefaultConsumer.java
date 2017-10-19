@@ -41,29 +41,32 @@ import com.financialforce.orizuru.exception.OrizuruException;
 import com.financialforce.orizuru.interfaces.IPublisher;
 
 /**
- * DefaultConsumer
+ * {@link DefaultConsumer}
  * <p>
- * RabbitMQ implementation of the Orizuru {@link AbstractConsumer}.
+ * RabbitMQ implementation of the Orizuru <a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/financialforcedev/orizuru-java/master/doc/com/financialforce/orizuru/AbstractConsumer.html">AbstractConsumer</a>.
  */
 public abstract class DefaultConsumer<I extends GenericContainer, O extends GenericContainer>
 		extends AbstractConsumer<I, O> implements Consumer {
 
 	private volatile String consumerTag;
-	
+
 	private Channel channel;
 
 	public DefaultConsumer(Channel channel, String incomingQueueName, String outgoingQueueName) {
-		
+
 		super(incomingQueueName);
-		
+
 		if (outgoingQueueName != null) {
 			this.publisher = new DefaultPublisher<O>(channel, outgoingQueueName);
 		}
-		
+
 		this.channel = channel;
-		
+
 	}
 
+	/* (non-Javadoc)
+	 * @see com.rabbitmq.client.Consumer#handleDelivery(java.lang.String, com.rabbitmq.client.Envelope, com.rabbitmq.client.AMQP.BasicProperties, byte[])
+	 */
 	@Override
 	public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties,
 			byte[] incomingMessage) throws IOException {

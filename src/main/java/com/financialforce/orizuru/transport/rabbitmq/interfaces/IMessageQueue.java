@@ -33,6 +33,9 @@ import org.apache.avro.generic.GenericContainer;
 import com.financialforce.orizuru.transport.rabbitmq.DefaultConsumer;
 import com.financialforce.orizuru.transport.rabbitmq.exception.MessagingException;
 
+/**
+ * {@link IMessageQueue}
+ */
 public interface IMessageQueue<I extends GenericContainer, O extends GenericContainer> {
 
 	Channel createChannel() throws MessagingException;
