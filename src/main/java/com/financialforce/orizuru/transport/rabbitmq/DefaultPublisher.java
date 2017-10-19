@@ -37,7 +37,7 @@ import com.financialforce.orizuru.message.Context;
 /**
  * {@link DefaultPublisher}
  * <p>
- * RabbitMQ implementation of the Orizuru <a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/financialforcedev/orizuru-java/feature/RESEARCH-852-split-out-orizuru-java/doc/com/financialforce/orizuru/AbstractPublisher.html">AbstractPublisher</a>.
+ * RabbitMQ implementation of the Orizuru <a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/financialforcedev/orizuru-java/master/doc/com/financialforce/orizuru/AbstractPublisher.html">AbstractPublisher</a>.
  */
 public class DefaultPublisher<O extends GenericContainer> extends AbstractPublisher<O> {
 
