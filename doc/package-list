@@ -1,0 +1,3 @@
+com.financialforce.orizuru.transport.rabbitmq
+com.financialforce.orizuru.transport.rabbitmq.exception
+com.financialforce.orizuru.transport.rabbitmq.interfaces
