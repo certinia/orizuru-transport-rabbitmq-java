@@ -34,32 +34,40 @@ import com.financialforce.orizuru.AbstractPublisher;
 import com.financialforce.orizuru.exception.publisher.OrizuruPublisherException;
 import com.financialforce.orizuru.message.Context;
 
+/**
+ * {@link DefaultPublisher}
+ * <p>
+ * RabbitMQ implementation of the Orizuru <a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/financialforcedev/orizuru-java/feature/RESEARCH-852-split-out-orizuru-java/doc/com/financialforce/orizuru/AbstractPublisher.html">AbstractPublisher</a>.
+ */
 public class DefaultPublisher<O extends GenericContainer> extends AbstractPublisher<O> {
 
 	private Channel channel;
-	
+
 	public DefaultPublisher(Channel channel, String queueName) {
 		super(queueName);
 		this.channel = channel;
 	}
-	
+
+	/* (non-Javadoc)
+	 * @see com.financialforce.orizuru.AbstractPublisher#publish(com.financialforce.orizuru.message.Context, org.apache.avro.generic.GenericContainer)
+	 */
 	@Override
 	public byte[] publish(Context context, O message) throws OrizuruPublisherException {
-		
+
 		byte[] outgoingMessage = null;
-				
+
 		try {
-			
+
 			outgoingMessage = super.publish(context, message);
-		
+
 			channel.basicPublish("", queueName, null, outgoingMessage);
-			
+
 		} catch (Exception ex) {
 			throw new OrizuruPublisherException(ex);
 		}
-		
+
 		return outgoingMessage;
-		
+
 	}
 
 }
