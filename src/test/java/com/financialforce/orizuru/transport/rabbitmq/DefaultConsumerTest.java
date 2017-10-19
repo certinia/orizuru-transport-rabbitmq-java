@@ -59,107 +59,107 @@ public class DefaultConsumerTest {
 
 	@Test
 	public void getChannel_shouldReturnTheChannel() {
-		
+
 		// given
 		Channel channel = mock(Channel.class);
 		TestConsumer consumer = new TestConsumer(channel, "input", null);
-		
+
 		// when/then
 		assertEquals(channel, consumer.getChannel());
-		
+
 	}
-	
+
 	@Test
 	public void getConsumerTag_shouldReturnTheNullConsumerTag_IfNoMessageHasBeenHandled() {
-		
+
 		// given
 		Channel channel = mock(Channel.class);
 		TestConsumer consumer = new TestConsumer(channel, "input", null);
-		
+
 		// when/then
 		assertNull(consumer.getConsumerTag());
-		
+
 	}
-	
+
 	@Test
 	public void getConsumerTag_shouldReturnTheNullConsumerTag_IfHandleCancelOkHasBeenCalled() {
-		
+
 		// given
 		String consumerTag = "consumer";
 		Channel channel = mock(Channel.class);
 		TestConsumer consumer = new TestConsumer(channel, "input", null);
 		consumer.handleCancelOk(consumerTag);
-		
+
 		// when/then
 		assertNull(consumer.getConsumerTag());
-		
+
 	}
-	
+
 	@Test
 	public void getConsumerTag_shouldReturnTheNullConsumerTag_IfHandleCancelHasBeenCalled() throws Exception {
-		
+
 		// given
 		String consumerTag = "consumer";
 		Channel channel = mock(Channel.class);
 		TestConsumer consumer = new TestConsumer(channel, "input", null);
 		consumer.handleCancel(consumerTag);
-		
+
 		// when/then
 		assertNull(consumer.getConsumerTag());
-		
+
 	}
-	
+
 	@Test
 	public void getConsumerTag_shouldReturnTheNullConsumerTag_IfHandleShutdownSignalHasBeenCalled() {
-		
+
 		// given
 		String consumerTag = "consumer";
 		Channel channel = mock(Channel.class);
 		TestConsumer consumer = new TestConsumer(channel, "input", null);
 		consumer.handleShutdownSignal(consumerTag, null);
-		
+
 		// when/then
 		assertNull(consumer.getConsumerTag());
-		
+
 	}
-	
+
 	@Test
 	public void getConsumerTag_shouldReturnTheNullConsumerTag_IfHandleRecoverOkHasBeenCalled() {
-		
+
 		// given
 		String consumerTag = "consumer";
 		Channel channel = mock(Channel.class);
 		TestConsumer consumer = new TestConsumer(channel, "input", null);
 		consumer.handleRecoverOk(consumerTag);
-		
+
 		// when/then
 		assertNull(consumer.getConsumerTag());
-		
+
 	}
-	
+
 	@Test
 	public void getConsumerTag_shouldReturnTheConsumerTag_IfAMessageHasBeenHandled() {
-		
+
 		// given
 		String expectedTag = "consumer";
 		Channel channel = mock(Channel.class);
 		TestConsumer consumer = new TestConsumer(channel, "input", null);
 		consumer.handleConsumeOk(expectedTag);
-		
+
 		// when/then
 		assertEquals(expectedTag, consumer.getConsumerTag());
-		
+
 	}
-	
+
 	@Test
 	public void handleDelivery_shouldConsumeTheIncomingMessage() throws Exception {
 
 		// given
 		byte[] body = Base64.getDecoder().decode(getFileContents("validTransport.txt"));
-		
+
 		Channel channel = mock(Channel.class);
 		TestConsumer consumer = new TestConsumer(channel, "input", null);
-		
+
 		// when
 		consumer.handleDelivery("test", null, null, body);
 
@@ -167,75 +167,75 @@ public class DefaultConsumerTest {
 		verify(channel, never()).basicPublish(any(), any(), any(), any());
 
 	}
-	
+
 	@Test
 	public void handleDelivery_shouldConsumeTheIncomingMessageAndCreateAnOutgoingMessage() throws Exception {
 
 		// given
 		byte[] body = Base64.getDecoder().decode(getFileContents("validTransport.txt"));
-		
+
 		Channel channel = mock(Channel.class);
 		IPublisher publisher = mock(IPublisher.class);
 		TestConsumer consumer = new TestConsumer(channel, "input", null);
 		consumer.setPublisher(publisher);
-		
+
 		// when
 		consumer.handleDelivery("test", null, null, body);
 
 		// thens
 		verify(publisher, times(1)).publish(any(), any());
-		
+
 	}
-	
+
 	@Test
 	public void handleDelivery_shouldConsumeTheIncomingMessageAndPublishOutgoingMessage() throws Exception {
 
 		// given
 		byte[] body = Base64.getDecoder().decode(getFileContents("validTransport.txt"));
-		
+
 		Channel channel = mock(Channel.class);
 		TestConsumer consumer = new TestConsumer(channel, "input", "output");
-		
+
 		// when
 		consumer.handleDelivery("test", null, null, body);
 
 		// then
 		verify(channel, times(1)).basicPublish(any(), any(), any(), any());
-		
+
 	}
-	
+
 	@Test
 	public void handleDelivery_shouldThrowAnOrizuruPublisherExceptionIfPublishingFails() throws Exception {
 
 		// given
 		byte[] body = Base64.getDecoder().decode(getFileContents("validTransport.txt"));
-		
+
 		Channel channel = mock(Channel.class);
 		ErrorConsumer consumer = new ErrorConsumer(channel, "input", "output");
-		
+
 		// expect
 		exception.expect(IOException.class);
 		exception.expectMessage("Failed to consume message");
 		exception.expectCause(IsInstanceOf.<Throwable>instanceOf(OrizuruPublisherException.class));
-				
+
 		// when
 		consumer.handleDelivery("test", null, null, body);
-		
+
 	}
-	
+
 	@Test
 	public void handleDelivery_shouldThrowAnOrizuruExceptionForAnInvalidMessage() throws Exception {
 
 		// given
 		byte[] body = "test".getBytes();
-		
+
 		Channel channel = mock(Channel.class);
 		TestConsumer consumer = new TestConsumer(channel, "input", null);
-		
+
 		// expect
 		exception.expect(IOException.class);
 		exception.expectMessage("Failed to consume message");
-		
+
 		// when
 		consumer.handleDelivery("test", null, null, body);
 
@@ -264,11 +264,10 @@ public class DefaultConsumerTest {
 				output.close();
 			}
 		}
-		
+
 		return null;
 	}
 
-	
 	private class TestConsumer extends DefaultConsumer<GenericContainer, GenericContainer> {
 
 		public TestConsumer(Channel channel, String incomingQueueName, String outgoingQueueName) {
@@ -279,9 +278,9 @@ public class DefaultConsumerTest {
 		public GenericContainer handleMessage(Context context, GenericContainer input) throws HandleMessageException {
 			return input;
 		}
-	
+
 	}
-	
+
 	private class ErrorConsumer extends DefaultConsumer<GenericContainer, GenericContainer> {
 
 		public ErrorConsumer(Channel channel, String incomingQueueName, String outgoingQueueName) {
@@ -292,7 +291,7 @@ public class DefaultConsumerTest {
 		public GenericContainer handleMessage(Context context, GenericContainer input) throws HandleMessageException {
 			return null;
 		}
-	
+
 	}
 
 }
