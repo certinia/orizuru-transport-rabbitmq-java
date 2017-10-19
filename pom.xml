@@ -19,7 +19,7 @@
 		<maven.jacoco.version>0.7.9</maven.jacoco.version>
 		<maven.javadoc.version>3.0.0-M1</maven.javadoc.version>
 		<mockito.version>2.8.47</mockito.version>
-		<orizuru.version>5c6778c5834921c84b4e467db4e489308a3b1923</orizuru.version>
+		<orizuru.version>2edaf064de307e9ebd2e0892c589d3280c44b02f</orizuru.version>
 		<rabbitmq.version>5.0.0</rabbitmq.version>
 		<rules.version>1.16.1</rules.version>
 	</properties>
