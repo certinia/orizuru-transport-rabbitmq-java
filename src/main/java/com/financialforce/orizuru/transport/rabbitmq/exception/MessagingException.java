@@ -27,8 +27,6 @@
 package com.financialforce.orizuru.transport.rabbitmq.exception;
 
 /**
- * {@link MessagingException}
- * <p>
  * Exception thrown for any RabbitMQ messaging exception.
  */
 public class MessagingException extends Exception {

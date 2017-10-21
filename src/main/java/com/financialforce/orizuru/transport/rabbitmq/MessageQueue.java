@@ -35,9 +35,6 @@ import org.apache.avro.generic.GenericContainer;
 import com.financialforce.orizuru.transport.rabbitmq.exception.MessagingException;
 import com.financialforce.orizuru.transport.rabbitmq.interfaces.IMessageQueue;
 
-/**
- * {@link MessageQueue}
- */
 public class MessageQueue<I extends GenericContainer, O extends GenericContainer> implements IMessageQueue<I, O> {
 
 	private static final String CLOUDAMQP_URL = "CLOUDAMQP_URL";

@@ -41,9 +41,7 @@ import com.financialforce.orizuru.exception.OrizuruException;
 import com.financialforce.orizuru.interfaces.IPublisher;
 
 /**
- * {@link DefaultConsumer}
- * <p>
- * RabbitMQ implementation of the Orizuru <a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/financialforcedev/orizuru-java/master/doc/com/financialforce/orizuru/AbstractConsumer.html">AbstractConsumer</a>.
+ * RabbitMQ implementation of the Orizuru {@link AbstractConsumer}.
  */
 public abstract class DefaultConsumer<I extends GenericContainer, O extends GenericContainer>
 		extends AbstractConsumer<I, O> implements Consumer {

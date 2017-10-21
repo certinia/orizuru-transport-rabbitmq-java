@@ -35,9 +35,7 @@ import com.financialforce.orizuru.exception.publisher.OrizuruPublisherException;
 import com.financialforce.orizuru.message.Context;
 
 /**
- * {@link DefaultPublisher}
- * <p>
- * RabbitMQ implementation of the Orizuru <a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/financialforcedev/orizuru-java/master/doc/com/financialforce/orizuru/AbstractPublisher.html">AbstractPublisher</a>.
+ * RabbitMQ implementation of the Orizuru {@link AbstractPublisher}.
  */
 public class DefaultPublisher<O extends GenericContainer> extends AbstractPublisher<O> {
 
