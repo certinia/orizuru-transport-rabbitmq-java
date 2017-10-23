@@ -37,8 +37,6 @@ import com.rabbitmq.client.ShutdownSignalException;
 import org.apache.avro.generic.GenericContainer;
 
 import com.financialforce.orizuru.AbstractConsumer;
-import com.financialforce.orizuru.exception.OrizuruException;
-import com.financialforce.orizuru.interfaces.IPublisher;
 
 /**
  * RabbitMQ implementation of the Orizuru {@link AbstractConsumer}.
@@ -71,7 +69,7 @@ public abstract class DefaultConsumer<I extends GenericContainer, O extends Gene
 
 		try {
 			consume(incomingMessage);
-		} catch (OrizuruException ex) {
+		} catch (Exception ex) {
 			throw new IOException("Failed to consume message", ex);
 		}
 
@@ -96,10 +94,6 @@ public abstract class DefaultConsumer<I extends GenericContainer, O extends Gene
 
 	@Override
 	public void handleRecoverOk(String consumerTag) {
-	}
-
-	public void setPublisher(IPublisher<O> publisher) {
-		this.publisher = publisher;
 	}
 
 	public Channel getChannel() {

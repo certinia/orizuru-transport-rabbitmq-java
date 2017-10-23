@@ -29,15 +29,13 @@ package com.financialforce.orizuru.transport.rabbitmq;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.Base64;
 
 import com.rabbitmq.client.Channel;
 
@@ -47,8 +45,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import com.financialforce.orizuru.exception.OrizuruException;
 import com.financialforce.orizuru.exception.consumer.handler.HandleMessageException;
-import com.financialforce.orizuru.exception.publisher.OrizuruPublisherException;
 import com.financialforce.orizuru.interfaces.IPublisher;
 import com.financialforce.orizuru.message.Context;
 
@@ -56,6 +54,60 @@ public class DefaultConsumerTest {
 
 	@Rule
 	public final ExpectedException exception = ExpectedException.none();
+
+	@Test
+	public void handleDelivery_shouldCallConsume() throws Exception {
+
+		// given
+		byte[] expectedBody = "test".getBytes();
+
+		Channel channel = mock(Channel.class);
+		DefaultConsumer consumer = mock(DefaultConsumer.class);
+		doCallRealMethod().when(consumer).handleDelivery(any(), any(), any(), any());
+
+		// when 
+		consumer.handleDelivery("test", null, null, expectedBody);
+
+		// then
+		verify(consumer, times(1)).consume(expectedBody);
+
+	}
+
+	@Test
+	public void handleDelivery_shouldThrowAnIOExceptionIfTheMessageFailsToBeConsumed() throws Exception {
+
+		// given
+		byte[] expectedBody = "test".getBytes();
+
+		Channel channel = mock(Channel.class);
+		DefaultConsumer consumer = mock(DefaultConsumer.class);
+		doCallRealMethod().when(consumer).handleDelivery(any(), any(), any(), any());
+		when(consumer.consume(any())).thenThrow(NullPointerException.class);
+
+		// expect
+		exception.expect(IOException.class);
+		exception.expectMessage("Failed to consume message");
+		exception.expectCause(IsInstanceOf.<Throwable>instanceOf(NullPointerException.class));
+
+		// when 
+		consumer.handleDelivery("test", null, null, expectedBody);
+
+	}
+
+	@Test
+	public void constructor_shouldCreateADefaultPublisherWithTheOutgoingQueueName() {
+
+		// given
+		String expectedOutgoingQueueName = "output";
+		Channel channel = mock(Channel.class);
+
+		// when
+		TestConsumer consumer = new TestConsumer(channel, "input", expectedOutgoingQueueName);
+
+		// then
+		assertEquals(expectedOutgoingQueueName, consumer.getPublisher().getQueueName());
+
+	}
 
 	@Test
 	public void getChannel_shouldReturnTheChannel() {
@@ -151,123 +203,6 @@ public class DefaultConsumerTest {
 
 	}
 
-	@Test
-	public void handleDelivery_shouldConsumeTheIncomingMessage() throws Exception {
-
-		// given
-		byte[] body = Base64.getDecoder().decode(getFileContents("validTransport.txt"));
-
-		Channel channel = mock(Channel.class);
-		TestConsumer consumer = new TestConsumer(channel, "input", null);
-
-		// when
-		consumer.handleDelivery("test", null, null, body);
-
-		// then
-		verify(channel, never()).basicPublish(any(), any(), any(), any());
-
-	}
-
-	@Test
-	public void handleDelivery_shouldConsumeTheIncomingMessageAndCreateAnOutgoingMessage() throws Exception {
-
-		// given
-		byte[] body = Base64.getDecoder().decode(getFileContents("validTransport.txt"));
-
-		Channel channel = mock(Channel.class);
-		IPublisher publisher = mock(IPublisher.class);
-		TestConsumer consumer = new TestConsumer(channel, "input", null);
-		consumer.setPublisher(publisher);
-
-		// when
-		consumer.handleDelivery("test", null, null, body);
-
-		// thens
-		verify(publisher, times(1)).publish(any(), any());
-
-	}
-
-	@Test
-	public void handleDelivery_shouldConsumeTheIncomingMessageAndPublishOutgoingMessage() throws Exception {
-
-		// given
-		byte[] body = Base64.getDecoder().decode(getFileContents("validTransport.txt"));
-
-		Channel channel = mock(Channel.class);
-		TestConsumer consumer = new TestConsumer(channel, "input", "output");
-
-		// when
-		consumer.handleDelivery("test", null, null, body);
-
-		// then
-		verify(channel, times(1)).basicPublish(any(), any(), any(), any());
-
-	}
-
-	@Test
-	public void handleDelivery_shouldThrowAnOrizuruPublisherExceptionIfPublishingFails() throws Exception {
-
-		// given
-		byte[] body = Base64.getDecoder().decode(getFileContents("validTransport.txt"));
-
-		Channel channel = mock(Channel.class);
-		ErrorConsumer consumer = new ErrorConsumer(channel, "input", "output");
-
-		// expect
-		exception.expect(IOException.class);
-		exception.expectMessage("Failed to consume message");
-		exception.expectCause(IsInstanceOf.<Throwable>instanceOf(OrizuruPublisherException.class));
-
-		// when
-		consumer.handleDelivery("test", null, null, body);
-
-	}
-
-	@Test
-	public void handleDelivery_shouldThrowAnOrizuruExceptionForAnInvalidMessage() throws Exception {
-
-		// given
-		byte[] body = "test".getBytes();
-
-		Channel channel = mock(Channel.class);
-		TestConsumer consumer = new TestConsumer(channel, "input", null);
-
-		// expect
-		exception.expect(IOException.class);
-		exception.expectMessage("Failed to consume message");
-
-		// when
-		consumer.handleDelivery("test", null, null, body);
-
-	}
-
-	private byte[] getFileContents(String fileName) throws IOException {
-
-		ByteArrayOutputStream output = null;
-
-		try {
-
-			InputStream input = getClass().getResourceAsStream(fileName);
-
-			output = new ByteArrayOutputStream();
-
-			byte[] buffer = new byte[8192];
-			int n = 0;
-			while (-1 != (n = input.read(buffer))) {
-				output.write(buffer, 0, n);
-			}
-
-			return output.toByteArray();
-
-		} catch (IOException ioe) {
-			if (output != null) {
-				output.close();
-			}
-		}
-
-		return null;
-	}
-
 	private class TestConsumer extends DefaultConsumer<GenericContainer, GenericContainer> {
 
 		public TestConsumer(Channel channel, String incomingQueueName, String outgoingQueueName) {
@@ -279,17 +214,13 @@ public class DefaultConsumerTest {
 			return input;
 		}
 
-	}
-
-	private class ErrorConsumer extends DefaultConsumer<GenericContainer, GenericContainer> {
-
-		public ErrorConsumer(Channel channel, String incomingQueueName, String outgoingQueueName) {
-			super(channel, incomingQueueName, outgoingQueueName);
+		@Override
+		public byte[] consume(byte[] body) throws OrizuruException {
+			return body;
 		}
 
-		@Override
-		public GenericContainer handleMessage(Context context, GenericContainer input) throws HandleMessageException {
-			return null;
+		public IPublisher<GenericContainer> getPublisher() {
+			return publisher;
 		}
 
 	}
