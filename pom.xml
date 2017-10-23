@@ -20,7 +20,7 @@
 		<maven.javadoc.version>3.0.0-M1</maven.javadoc.version>
 		<maven.source.version>3.0.1</maven.source.version>
 		<mockito.version>2.8.47</mockito.version>
-		<orizuru.version>c6a138d21658d6f3d5e501e37ff27d8c6bcc9cc6</orizuru.version>
+		<orizuru.version>8afaf9171e3011fc142fba7022692e8047a9ad92</orizuru.version>
 		<rabbitmq.version>5.0.0</rabbitmq.version>
 		<rules.version>1.16.1</rules.version>
 	</properties>
